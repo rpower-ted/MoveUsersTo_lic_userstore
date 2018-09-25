@@ -1,5 +1,5 @@
 ﻿
-namespace MoveUsersTo_lic_userstore
+namespace MoveUsersTo_lic_storeuser
 {
     /// <summary>
     /// This class moves user records from tbl_user to lic_storeuser
@@ -19,7 +19,9 @@ namespace MoveUsersTo_lic_userstore
         /// </summary>
         public void Run()
         {
+            // read date range
 
+            // write date range
         }
     }
 }

@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{D9732853-2FFE-45AD-B562-95BD4CEE1304}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>MoveUsersTo_lic_userstore</RootNamespace>
-    <AssemblyName>MoveUsersTo_lic_userstore</AssemblyName>
+    <RootNamespace>MoveUsersTo_lic_storeuser</RootNamespace>
+    <AssemblyName>MoveUsersTo_lic_storeuser</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QueryBuilder.cs" />
     <Compile Include="UserMover.cs" />
   </ItemGroup>
   <ItemGroup>

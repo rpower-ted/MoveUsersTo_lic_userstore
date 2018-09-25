@@ -1,5 +1,5 @@
 ﻿
-namespace MoveUsersTo_lic_userstore
+namespace MoveUsersTo_lic_storeuser
 {
     class Program
     {

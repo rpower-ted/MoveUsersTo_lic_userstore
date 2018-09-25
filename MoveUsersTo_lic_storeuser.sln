@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoveUsersTo_lic_userstore", "MoveUsersTo_lic_userstore\MoveUsersTo_lic_userstore.csproj", "{D9732853-2FFE-45AD-B562-95BD4CEE1304}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoveUsersTo_lic_storeuser", "MoveUsersTo_lic_storeuser\MoveUsersTo_lic_storeuser.csproj", "{D9732853-2FFE-45AD-B562-95BD4CEE1304}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
