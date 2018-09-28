@@ -43,8 +43,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\RPOWERLibraries\K3NET\Constants.cs">
+      <Link>K3NET\Constants.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\K3NET\Conversion\Converter.cs">
+      <Link>K3NET\Converter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\K3NET\CRC64Generator.cs">
+      <Link>K3NET\CRC64Generator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\K3NET\Date\DateUtilities.cs">
+      <Link>K3NET\DateUtilities.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\K3NET\Date\K3DateRange.cs">
+      <Link>K3NET\K3DateRange.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\K3NET\Encryption\Hash\HashEncryptor.cs">
+      <Link>K3NET\HashEncryptor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\K3NET\StrashGenerator.cs">
+      <Link>K3NET\StrashGenerator.cs</Link>
+    </Compile>
     <Compile Include="..\..\RPOWERLibraries\K3NET\Strings\StringManipulation.cs">
       <Link>K3NET\StringManipulation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\Database\Column.cs">
+      <Link>RPData\Column.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\Database\ColumnList.cs">
+      <Link>RPData\ColumnList.cs</Link>
     </Compile>
     <Compile Include="..\..\RPOWERLibraries\RPData\RPData\Database\Common\ConnectionStringBuilder.cs">
       <Link>RPData\ConnectionStringBuilder.cs</Link>
@@ -58,11 +85,131 @@
     <Compile Include="..\..\RPOWERLibraries\RPData\RPData\Database\Common\DatabaseManagerSettings.cs">
       <Link>RPData\DatabaseManagerSettings.cs</Link>
     </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\Database\Common\DataUtilities.cs">
+      <Link>RPData\DataUtilities.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\Database\Common\IDatabaseManager.cs">
+      <Link>RPData\IDatabaseManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\Database\Common\OperationResult.cs">
+      <Link>RPData\OperationResult.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\Database\Constraint.cs">
+      <Link>RPData\Constraint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\Database\ForeignKey.cs">
+      <Link>RPData\ForeignKey.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\Database\Odbc\MySQLConnectionStringBuilder.cs">
+      <Link>RPData\MySQLConnectionStringBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\Database\Odbc\MySQLManager.cs">
+      <Link>RPData\MySQLManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\Database\Odbc\OdbcDatabaseCommander.cs">
+      <Link>RPData\OdbcDatabaseCommander.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\Database\Odbc\OdbcManager.cs">
+      <Link>RPData\OdbcManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\Database\Table.cs">
+      <Link>RPData\Table.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\Database\TableLink.cs">
+      <Link>RPData\TableLink.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\DML\ClauseItem.cs">
+      <Link>RPData\ClauseItem.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\DML\DateRange.cs">
+      <Link>RPData\DateRange.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\DML\RawOperationData.cs">
+      <Link>RPData\RawOperationData.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\DML\SQL\ALTERStatementGenerator.cs">
+      <Link>RPData\ALTERStatementGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\DML\SQL\CREATEINDEXGenerator.cs">
+      <Link>RPData\CREATEINDEXGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\DML\SQL\CREATETABLEGenerator.cs">
+      <Link>RPData\CREATETABLEGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\DML\SQL\DROPINDEXStatement.cs">
+      <Link>RPData\DROPINDEXStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\DML\SQL\DROPTABLEGenerator.cs">
+      <Link>RPData\DROPTABLEGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\DML\SQL\SELECTStatementGenerator.cs">
+      <Link>RPData\SELECTStatementGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\DML\SQL\SQLActionItem.cs">
+      <Link>RPData\SQLActionItem.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\DML\SQL\SQLActionItemList.cs">
+      <Link>RPData\SQLActionItemList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\DML\SQL\SQLDeleteStatement.cs">
+      <Link>RPData\SQLDeleteStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\DML\SQL\SQLInsertStatement.cs">
+      <Link>RPData\SQLInsertStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\DML\SQL\SQLQueryStatement.cs">
+      <Link>RPData\SQLQueryStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\DML\SQL\SQLStatement.cs">
+      <Link>RPData\SQLStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\DML\SQL\SQLStatementGenerator.cs">
+      <Link>RPData\SQLStatementGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\DML\SQL\SQLUpdateStatement.cs">
+      <Link>RPData\SQLUpdateStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\DML\SQL\SQLUtilities.cs">
+      <Link>RPData\SQLUtilities.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\DML\Stage.cs">
+      <Link>RPData\Stage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\DML\TableClause.cs">
+      <Link>RPData\TableClause.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\Import\Data\DBRecordToRecordDataConverter.cs">
+      <Link>RPData\DBRecordToRecordDataConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\Import\Data\PMField.cs">
+      <Link>RPData\PMField.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\Import\Data\RecordData.cs">
+      <Link>RPData\RecordData.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\Import\Data\RecordDataConverter.cs">
+      <Link>RPData\RecordDataConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\Import\Data\RecordDataField.cs">
+      <Link>RPData\RecordDataField.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\Import\Data\RecordDataGeneratorQueryBuilder.cs">
+      <Link>RPData\RecordDataGeneratorQueryBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPData\RPData\RefinedOperationData.cs">
+      <Link>RPData\RefinedOperationData.cs</Link>
+    </Compile>
     <Compile Include="..\..\RPOWERLibraries\RPNET\IO\INIFile.cs">
       <Link>RPNET\INIFile.cs</Link>
     </Compile>
     <Compile Include="..\..\RPOWERLibraries\RPNET\IO\LogFile.cs">
       <Link>RPNET\LogFile.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPNET\IO\TieredLogFile.cs">
+      <Link>RPData\TieredLogFile.cs</Link>
+    </Compile>
+    <Compile Include="..\..\RPOWERLibraries\RPNET\Stopwatch.cs">
+      <Link>RPNET\Stopwatch.cs</Link>
     </Compile>
     <Compile Include="Preferences.cs" />
     <Compile Include="Program.cs" />

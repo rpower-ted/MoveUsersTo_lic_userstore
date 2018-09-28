@@ -6,7 +6,10 @@ using System.IO;
 using System.Reflection;
 
 using K3NET.Strings;
+using RPData.Database;
 using RPData.Database.Common;
+using RPData.DML;
+using RPData.DML.SQL;
 using RPNET.IO;
 
 namespace MoveUsersTo_lic_storeuser
@@ -18,6 +21,10 @@ namespace MoveUsersTo_lic_storeuser
     {
         private const string IniDirectoryName = "ini";
         private const string      LogFileName = "MoveUsersTo_lic_storeuser.log";
+        private const string TblStoreUserName = "tbl_storeuser";
+        private const string         MidField = "mid";
+        private const string     UserMidField = "user_mid";
+        private const string    StoreMidField = "store_mid";
         
         /// <summary>
         /// The query builder
@@ -30,6 +37,7 @@ namespace MoveUsersTo_lic_storeuser
         public UserMover()
         {
             this.QueryBuilder = new QueryBuilder();
+            DataUtilities.InitializePunSpinner();
         }
 
         /// <summary>
@@ -76,7 +84,8 @@ namespace MoveUsersTo_lic_storeuser
                         {
                             foreach (int serialNumber in user.StoreSNList)
                             {
-                                userStoreList.AddRange(storeList.FindAll(delegate (Store s) { return s.SerialNumber == serialNumber; }));
+                                userStoreList.AddRange(storeList.FindAll(delegate (Store s) 
+                                                                           { return s.SerialNumber == serialNumber; }));
                             }
                         }
                         else
@@ -96,12 +105,18 @@ namespace MoveUsersTo_lic_storeuser
                 
                 foreach (User user in userList)
                 {
+                    RawOperationData rod = this.GenerateMultiRowInsertOnDuplicateKeyUpdateSQL(user);
+                    OperationResult   or = dbManager.Insert(rod);
 
+                    if (or.DidSucceed == false)
+                    {
+                        log.Append("Error inserting records: " + or.ErrorMessage + " on " + or.Statement);
+                    }
                 }
             }
-            catch (DbException)
+            catch (DbException error)
             {
-
+                log.AppendStatement(error.Message);
             }         
             finally
             {
@@ -325,164 +340,40 @@ namespace MoveUsersTo_lic_storeuser
         /// <param name="t"> a Table object </param>
         /// <param name="dbType"> an enumerated value indicating the database type </param>
         /// <returns></returns>
-        internal RawOperationData GenerateMultiRowInsertOnDuplicateKeyUpdateSQL(List<RecordData> recordList,
-                                                                                ReplicationTable t,
-                                                                                DatabaseManager.eDatabaseType dbType,
-                                                                                bool changeTimeStamps,
-                                                                                Constants.ReplType replicationType)
+        internal RawOperationData GenerateMultiRowInsertOnDuplicateKeyUpdateSQL(User user)
         {
             var isg = new SQLInsertStatement();
 
-            var qo = new RawOperationData(dbType);
-            var tc = new TableClause(t.SourceTable);
+            var  destTable = new Table();
+            destTable.Name = UserMover.TblStoreUserName;
+
+            var        tc = new TableClause(destTable);
+            var        qo = new RawOperationData(DatabaseManager.eDatabaseType.MySQL);
+
             var fieldList = new List<ClauseItem>();
 
-            // this is where we get our column names for the insert statement
-            foreach (Column col in t.DestTable.Columns)
-            {
-                // Skip the time_stamp field. We no longer import a value for it. time_stamp is now 
-                // of type TIMESTAMP, and TIMESTAMP fields initialize themselves to the current UTC time, but
-                // display as local time. When a record is updated, the value of a TIMESTAMP field is automatically
-                // updated, so no need to pass a value to them.  -- Ted 2018-06-16
-
-                // if (col.Name.Equals(Constants.TimeStamp))
-                // if we don't want to change time stamps, then we need to add the time_stamp field
-                // to push the current value to the database. 
-                // if we do want to change timestamps, then we don't want to add the field because
-                // it will automatically be given a value by the database when added to the database.
-                if (col.Name.Equals(Constants.TimeStamp) && changeTimeStamps)
-                    continue;
-
-                fieldList.Add(new ClauseItem(new FieldName(this.BookendString(col.Name, dbType)),
-                                             operation: ClauseItem.Operation.Include));
-            }
+            fieldList.Add(new ClauseItem(new FieldName(UserMover.MidField), operation: ClauseItem.Operation.Include));
+            fieldList.Add(new ClauseItem(new FieldName(UserMover.UserMidField), operation: ClauseItem.Operation.Include));
+            fieldList.Add(new ClauseItem(new FieldName(UserMover.StoreMidField), operation: ClauseItem.Operation.Include));
 
 
             var recItemList = new List<ClauseItem>();
-
-            // this is where we create our value list for the insert statement
-            foreach (RecordData rd in recordList)
+            var   valueList = new List<ClauseItem>();
+            
+            foreach(long storeMid in user.StoreMidList)
             {
-                ClauseItem item = new ClauseItem();
-                var valueList = new List<ClauseItem>();
-
-                foreach (KeyValuePair<string, RecordDataField> kvp in rd.AllFields)
-                {
-                    // if this is the time_stamp field and we want to allow timestamps to change,
-                    // then ignore this column.
-                    if (kvp.Key.Equals(Constants.TimeStamp) && changeTimeStamps)
-                        continue;
-
-                    // column name translations from old to new
-
-                    // skip if the record contains both rid and record_id fields
-                    if (kvp.Key.Equals(QueryBuilder.RID_Column) &&
-                        rd.AllFields.ContainsKey(QueryBuilder.RecordId_Column))
-                        continue;
-
-                    if (kvp.Key.Equals(QueryBuilder.RecordId_Column))
-                    {
-                        valueList.Add(new ClauseItem(compValue: kvp.Value.Value));
-                        continue;
-                    }
-                    else if (kvp.Key.Equals(QueryBuilder.MIDFlags_Column))
-                    {
-                        valueList.Add(new ClauseItem(compValue: kvp.Value.Value));
-                        continue;
-                    }
-                    else if (kvp.Key.Equals(QueryBuilder.MIDTimeStamp_Column))
-                        continue; // ignore this column
-
-                    Column c = t.DestTable.GetColumn(kvp.Key);
-
-                    if (c == null)
-                        continue;
-
-                    if (kvp.Key.Equals(Replicator.TimeStampFieldName))
-                    {
-                        Column srcCol = t.SourceTable.GetColumn(Replicator.TimeStampFieldName);
-
-                        if (srcCol.DataType == Column.FIELD_TYPE_TIMESTAMP)
-                        {
-
-                        }
-                        else
-                        {
-                            DateTime dt = Convert.ToDateTime(kvp.Value.Value);
-                            valueList.Add(new ClauseItem(compValue: dt));
-                        }
-
-                        continue;
-                    }
-
-                    if (c != null && c.Type.Equals(QueryBuilder.DateTime_Type))
-                    {
-                        DateTime dt = Convert.ToDateTime(kvp.Value.Value.ToString());
-                        valueList.Add(new ClauseItem(compValue: dt));
-                    }
-                    else
-                    {
-                        if (kvp.Value.Value.ToString().Equals(Column.DEFAULT_NULL))
-                        {
-                            valueList.Add(new ClauseItem(compValue: SQLStatementGenerator.Explicit_NULL_Indicator));
-                        }
-                        else
-                        {
-                            valueList.Add(new ClauseItem(compValue: kvp.Value.Value));
-                        }
-                    }
-                } // end  forach (KeyValuePair<string, RecordDataField> kvp in rd.AllFields)
-
-                // hasha 
-                if (t.DestTable.DoesContainColumn(QueryBuilder.HashA_Column) &&
-                    !t.SourceTable.DoesContainColumn(QueryBuilder.HashA_Column) &&
-                    !t.DestTable.DoesContainColumn(QueryBuilder.HashB_Column))
-                {
-                    long hasha = DataUtilities.Synthesize63BitStrashFromFieldList(t.DestTable.HashAFields, rd, t.DestTable);
-                    bool hashaExists = fieldList.Exists(delegate (ClauseItem ci) { return ci.Value.ToString().Equals(QueryBuilder.HashA_Column); });
-
-                    if (!hashaExists)
-                        fieldList.Add(new ClauseItem(operation: ClauseItem.Operation.Include, compValue: this.BookendString(QueryBuilder.HashA_Column, dbType)));
-
-                    valueList.Add(new ClauseItem(compValue: hasha));
-                }
-
-                // mid
-                if (t.DestTable.DoesContainColumn(QueryBuilder.MID_Column) &&
-                   !t.SourceTable.DoesContainColumn(QueryBuilder.MID_Column))
-                {
-                    bool midColExists = fieldList.Exists(delegate (ClauseItem ci) { return ci.Value.ToString().Equals(QueryBuilder.MID_Column); });
-
-                    if (!midColExists)
-                        fieldList.Add(new ClauseItem(operation: ClauseItem.Operation.Include, compValue: this.BookendString(QueryBuilder.MID_Column, dbType)));
-
-                    valueList.Add(new ClauseItem(compValue: DataUtilities.GeneratePUN()));
-                }
+                var item = new ClauseItem();
+                valueList.Add(new ClauseItem(operation: ClauseItem.Operation.Include, compValue: DataUtilities.GeneratePUN()));
+                valueList.Add(new ClauseItem(operation: ClauseItem.Operation.Include, compValue: user.Mid));
+                valueList.Add(new ClauseItem(operation: ClauseItem.Operation.Include, compValue: user.StoreMidList));
 
                 item.Value = valueList;
                 recItemList.Add(item);
             }
-
-            qo.StageList.Add(1, new Stage(new ClauseItem(compValue: tc), Stage.eOperation.Insert));
+                                                       
+            qo.StageList.Add(1, new Stage(new ClauseItem(compValue: tc), Stage.eOperation.InsertIgnore));
             qo.StageList.Add(2, new Stage(fieldList, Stage.eOperation.Project));
             qo.StageList.Add(3, new Stage(recItemList, Stage.eOperation.Values));
-
-            if (replicationType == Constants.ReplType.Live)
-            {
-                // this is where we generate the On Duplicate Key clause
-                var updateItemList = new List<ClauseItem>();
-
-                foreach (Column c in t.DestTable.Columns)
-                {
-                    if (c.Name.Equals(Replicator.TimeStampFieldName))
-                        continue;
-
-                    updateItemList.Add(new ClauseItem(new FieldName(c.Name), operation: ClauseItem.Operation.Equals, compValue: new FieldName(c.Name)));
-                }
-
-                qo.StageList.Add(4, new Stage(updateItemList, Stage.eOperation.OnDuplicateKey));
-            }
-
 
             isg.Fill(qo);
 
